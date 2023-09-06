@@ -1,9 +1,7 @@
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'constants.dart';
 import 'label_painter.dart';
@@ -541,41 +539,6 @@ class OnboardingStepperState extends State<OnboardingStepper>
       behavior: step.overlayBehavior,
       onPointerUp: (PointerUpEvent event) {
         _nextStep();
-      },
-      onPointerDown: (PointerDownEvent details) {
-        // log('global listener');
-        final BoxHitTestResult result = BoxHitTestResult();
-        final RenderBox overlayBox =
-            overlayKey.currentContext?.findRenderObject() as RenderBox;
-        final Offset localOverlay = overlayBox.globalToLocal(details.position);
-
-        if (step.onTapCallback != null) {
-          final RenderBox labelBox =
-              labelKey.currentContext?.findRenderObject() as RenderBox;
-          final Offset localLabel = labelBox.globalToLocal(details.position);
-
-          final bool isLabelClicked =
-              labelBox.hitTest(result, position: localLabel);
-          final bool isOverlayClicked =
-              overlayBox.hitTest(result, position: localOverlay);
-          final TapArea area = isOverlayClicked && !isLabelClicked
-              ? TapArea.overlay
-              : isOverlayClicked && isLabelClicked
-                  ? TapArea.label
-                  : TapArea.hole;
-          log('onTapCallback $area');
-          step.onTapCallback?.call(area, _nextStep, _close);
-          return;
-        }
-
-        if (step.stepBuilder != null) {
-          return;
-        }
-
-        if (overlayBox.hitTest(result, position: localOverlay) ||
-            step.overlayBehavior != HitTestBehavior.deferToChild) {
-          _nextStep();
-        }
       },
       child: Stack(
         key: step.key,
