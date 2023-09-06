@@ -539,6 +539,9 @@ class OnboardingStepperState extends State<OnboardingStepper>
 
     return Listener(
       behavior: step.overlayBehavior,
+      onPointerUp: (PointerUpEvent event) {
+        _nextStep();
+      },
       onPointerDown: (PointerDownEvent details) {
         // log('global listener');
         final BoxHitTestResult result = BoxHitTestResult();
